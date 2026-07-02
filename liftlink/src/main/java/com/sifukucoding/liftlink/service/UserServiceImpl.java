@@ -2,12 +2,14 @@ package com.sifukucoding.liftlink.service;
 
 import com.sifukucoding.liftlink.TDOs.user.UserRequest;
 import com.sifukucoding.liftlink.TDOs.user.UserResponse;
+import com.sifukucoding.liftlink.handler.UserAlreadyExistsException;
 import com.sifukucoding.liftlink.model.User;
 import com.sifukucoding.liftlink.repository.UserRepository;
 import com.sifukucoding.liftlink.serviceinterface.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +20,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     @Override
     public UserResponse register(UserRequest request) {
-        if (userRepository.existByEmail(request.getEmail())){
-            throw new RuntimeException("Email already exist!");
+        if (userRepository.existsByEmail(request.getEmail())){
+            throw new UserAlreadyExistsException(
+                    "A user with email " + request.getEmail() + " already exists."
+            );
         }
 
         User user = User.builder()
@@ -31,7 +35,7 @@ public class UserServiceImpl implements UserService {
                 .role(request.getRole())
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
-                .createdAt(request.getDateOfBirth())
+                .createdAt(LocalDate.now())
                 .active(false)
                 .build();
 

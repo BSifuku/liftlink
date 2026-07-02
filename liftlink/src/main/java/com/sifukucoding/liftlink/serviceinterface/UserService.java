@@ -2,7 +2,6 @@ package com.sifukucoding.liftlink.serviceinterface;
 
 import com.sifukucoding.liftlink.TDOs.user.UserRequest;
 import com.sifukucoding.liftlink.TDOs.user.UserResponse;
-import com.sifukucoding.liftlink.model.User;
 
 import java.util.List;
 
