@@ -3,9 +3,11 @@ package com.sifukucoding.liftlink.service;
 import com.sifukucoding.liftlink.TDOs.user.UserRequest;
 import com.sifukucoding.liftlink.TDOs.user.UserResponse;
 import com.sifukucoding.liftlink.handler.UserAlreadyExistsException;
+import com.sifukucoding.liftlink.handler.InvalidRoleException;
+import com.sifukucoding.liftlink.model.Role;
 import com.sifukucoding.liftlink.model.User;
 import com.sifukucoding.liftlink.repository.UserRepository;
-import com.sifukucoding.liftlink.serviceinterface.UserService;
+import com.sifukucoding.liftlink.serviceinterface.IAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class AuthService implements UserService {
+public class AuthService implements IAuthService {
 
     private final UserRepository userRepository;
     @Override
@@ -25,7 +27,11 @@ public class AuthService implements UserService {
             );
         }
 
-        User user = User.builder()
+        if(request.getRole() == Role.ADMIN){
+            throw new InvalidRoleException("You cannot register as ADMIN");
+        }
+
+         User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())

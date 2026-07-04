@@ -5,7 +5,7 @@ import com.sifukucoding.liftlink.TDOs.user.UserResponse;
 
 import java.util.List;
 
-public interface UserService {
+public interface IAuthService {
     UserResponse register(UserRequest request);
     UserResponse getUserById(Long id);
     List<UserResponse> getAllUsers();

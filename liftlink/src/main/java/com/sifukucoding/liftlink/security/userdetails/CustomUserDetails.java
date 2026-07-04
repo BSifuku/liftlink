@@ -1,6 +1,7 @@
 package com.sifukucoding.liftlink.security.userdetails;
 
 import com.sifukucoding.liftlink.model.Role;
+import com.sifukucoding.liftlink.model.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
@@ -20,6 +21,8 @@ public class CustomUserDetails implements UserDetails {
     private final String password;
     private final Role role;
     private final boolean active;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
