@@ -1,9 +1,11 @@
-package com.sifukucoding.liftlink.controller;
+package com.sifukucoding.liftlink.auth.controller;
 
 
-import com.sifukucoding.liftlink.TDOs.user.UserRequest;
-import com.sifukucoding.liftlink.TDOs.user.UserResponse;
-import com.sifukucoding.liftlink.service.AuthService;
+import com.sifukucoding.liftlink.auth.tdo.AuthenticationResponse;
+import com.sifukucoding.liftlink.auth.tdo.LoginRequest;
+import com.sifukucoding.liftlink.auth.tdo.UserRequest;
+import com.sifukucoding.liftlink.auth.tdo.UserResponse;
+import com.sifukucoding.liftlink.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,4 +27,16 @@ public class AuthController {
 
         return ResponseEntity.ok(authService.register(request));
     }
-}
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(
+            @Valid @RequestBody LoginRequest request){
+
+            return ResponseEntity.ok(
+                    authService.login(request)
+            );
+
+        }
+
+    }
+

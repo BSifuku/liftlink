@@ -1,24 +1,31 @@
-package com.sifukucoding.liftlink.service;
+package com.sifukucoding.liftlink.auth.service;
 
-import com.sifukucoding.liftlink.TDOs.user.UserRequest;
-import com.sifukucoding.liftlink.TDOs.user.UserResponse;
+import com.sifukucoding.liftlink.auth.tdo.AuthenticationResponse;
+import com.sifukucoding.liftlink.auth.tdo.LoginRequest;
+import com.sifukucoding.liftlink.auth.tdo.UserRequest;
+import com.sifukucoding.liftlink.auth.tdo.UserResponse;
 import com.sifukucoding.liftlink.handler.UserAlreadyExistsException;
 import com.sifukucoding.liftlink.handler.InvalidRoleException;
+import com.sifukucoding.liftlink.handler.UserNotFoundException;
 import com.sifukucoding.liftlink.model.Role;
 import com.sifukucoding.liftlink.model.User;
 import com.sifukucoding.liftlink.repository.UserRepository;
-import com.sifukucoding.liftlink.serviceinterface.IAuthService;
+import com.sifukucoding.liftlink.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 @RequiredArgsConstructor
 @Service
 public class AuthService implements IAuthService {
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+     private final JwtService jwtService;
     @Override
     public UserResponse register(UserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())){
@@ -60,25 +67,36 @@ public class AuthService implements IAuthService {
 
     }
 
-
     @Override
-    public UserResponse getUserById(Long id) {
-       return null;
+    public AuthenticationResponse login(LoginRequest request) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found"));
+
+        String token = jwtService.generateToken(user);
+
+        return AuthenticationResponse.builder()
+
+                .token(token)
+                .tokenType("Bearer")
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .role(user.getRole())
+
+                .build();
+
     }
 
-    @Override
-    public List<UserResponse> getAllUsers() {
-        return List.of();
-    }
 
-    @Override
-    public UserResponse updateUser(Long id, UserRequest request) {
-        return null;
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-
-    }
 }
 
