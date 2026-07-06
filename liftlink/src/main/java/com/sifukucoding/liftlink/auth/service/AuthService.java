@@ -14,6 +14,7 @@ import com.sifukucoding.liftlink.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 @Service
 public class AuthService implements IAuthService {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
      private final JwtService jwtService;
@@ -43,12 +45,12 @@ public class AuthService implements IAuthService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
                 .createdAt(LocalDate.now())
-                .active(false)
+                .active(true)
                 .build();
 
         User saved = userRepository.save(user);

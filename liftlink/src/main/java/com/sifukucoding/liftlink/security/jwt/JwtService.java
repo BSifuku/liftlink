@@ -26,7 +26,7 @@ import static javax.xml.crypto.dsig.Transform.BASE64;
 @Service
 public class JwtService {
 
-    @Value("{jwt.secret}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
     @Value("${jwt.expiration}")

@@ -1,13 +1,17 @@
 package com.sifukucoding.liftlink.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @Builder
 public class User {
@@ -42,4 +46,7 @@ public class User {
     private LocalDate createdAt;
 
     private boolean active;
+
+    @OneToOne(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CarInformation carInformation;
 }
