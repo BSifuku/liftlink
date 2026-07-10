@@ -26,6 +26,9 @@ public class EmailVerification {
     private LocalDateTime expiryTime;
 
     @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
     private boolean used;
 
     @OneToOne

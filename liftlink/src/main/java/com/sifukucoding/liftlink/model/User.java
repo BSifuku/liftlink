@@ -49,4 +49,8 @@ public class User {
 
     @OneToOne(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
     private CarInformation carInformation;
+
+    public String fullNames(){
+        return firstName + " " + lastName;
+    }
 }
