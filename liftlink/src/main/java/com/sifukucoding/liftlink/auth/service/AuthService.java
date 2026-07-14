@@ -1,24 +1,21 @@
 package com.sifukucoding.liftlink.auth.service;
 
-import com.sifukucoding.liftlink.auth.tdo.AuthenticationResponse;
-import com.sifukucoding.liftlink.auth.tdo.LoginRequest;
-import com.sifukucoding.liftlink.auth.tdo.UserRequest;
-import com.sifukucoding.liftlink.auth.tdo.UserResponse;
+import com.sifukucoding.liftlink.auth.tdo.*;
 import com.sifukucoding.liftlink.email.model.EmailTemplateName;
 import com.sifukucoding.liftlink.email.model.EmailVerification;
 import com.sifukucoding.liftlink.email.repository.EmailVerificationRepository;
 import com.sifukucoding.liftlink.email.service.EmailService;
-import com.sifukucoding.liftlink.handler.UserAlreadyExistsException;
-import com.sifukucoding.liftlink.handler.InvalidRoleException;
-import com.sifukucoding.liftlink.handler.UserNotFoundException;
+import com.sifukucoding.liftlink.handler.*;
 import com.sifukucoding.liftlink.model.Role;
 import com.sifukucoding.liftlink.model.User;
 import com.sifukucoding.liftlink.repository.UserRepository;
 import com.sifukucoding.liftlink.security.jwt.JwtService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +59,7 @@ public class AuthService implements IAuthService {
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
                 .createdAt(LocalDate.now())
-                .active(true)
+                .active(false)
                 .build();
 
         User saved = userRepository.save(user);
@@ -84,34 +81,55 @@ public class AuthService implements IAuthService {
 
     }
 
-    private void sendValidationEmail(User user) {
-        var newVerificationCode = generateAndSaveActivationToken(user);
+//    private void sendValidationEmail(User user) {
+//        var newVerificationCode = generateAndSaveActivationToken(user);
+//
+//        //send email
+//        emailService.sendVerificationEmail(user.getEmail(),
+//                user.fullNames(),
+//                newVerificationCode,
+//                EmailTemplateName.ACTIVATE_ACCOUNT,
+//                activationUrl,
+//                newVerificationCode);
+//    }
 
-        //send email
-        emailService.sendVerificationEmail(user.getEmail(),
+    private void sendValidationEmail(User user) {
+
+        String verificationCode = generateOrUpdateActivationToken(user);
+
+        emailService.sendVerificationEmail(
+                user.getEmail(),
                 user.fullNames(),
-                newVerificationCode,
+                verificationCode,
                 EmailTemplateName.ACTIVATE_ACCOUNT,
                 activationUrl,
-                newVerificationCode);
+                verificationCode
+        );
     }
 
-    public String generateAndSaveActivationToken(User user) {
+    private String generateOrUpdateActivationToken(User user) {
+
         String generatedCode = generateActivationCode(6);
 
-        var verificationCode = EmailVerification.builder()
-                .verificationCode(generatedCode)
-                .used(false)
-                .expiryTime(LocalDateTime.now().plusMinutes(15))
-                .createdAt(LocalDateTime.now())
-                .user(user)
-                .build();
+        EmailVerification verification = verificationRepository
+                .findByUser(user)
+                .orElse(
+                        EmailVerification.builder()
+                                .user(user)
+                                .createdAt(LocalDateTime.now())
+                                .build()
+                );
 
-        verificationRepository.save(verificationCode);
+        verification.setVerificationCode(generatedCode);
+        verification.setExpiryTime(LocalDateTime.now().plusMinutes(15));
+        verification.setUsed(false);
+
+        verificationRepository.save(verification);
+
         return generatedCode;
     }
 
-    private String generateActivationCode(int length) {
+    public String generateActivationCode(int length) {
 
         String characters = "0123456789";
         StringBuilder codeBuilder = new StringBuilder();
@@ -127,6 +145,19 @@ public class AuthService implements IAuthService {
     @Override
     public AuthenticationResponse login(LoginRequest request) {
 
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found"));
+
+        if (!user.isActive()) {
+
+            sendValidationEmail(user);
+
+            throw new AccountNotVerifiedException(
+                    "Your account is not verified. A new verification code has been sent to your email."
+            );
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -134,9 +165,8 @@ public class AuthService implements IAuthService {
                 )
         );
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() ->
-                        new UserNotFoundException("User not found"));
+
+
 
         String token = jwtService.generateToken(user);
 
@@ -151,6 +181,43 @@ public class AuthService implements IAuthService {
                 .role(user.getRole())
 
                 .build();
+
+    }
+
+    @Override
+    @Transactional
+    public void verifyEmail(EmailVerificationRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()->
+                new UsernameNotFoundException("User not found"));
+
+        EmailVerification verification = verificationRepository.findByUser(user).orElseThrow(()->
+                new VerificationCodeNotFoundException("Verification code not found"));
+
+        if(verification.isUsed()){
+            throw new VerificationCodeAlreadyUsedException(
+                    "Verification code has already been used.");
+        }
+
+        if (!verification.getVerificationCode()
+                .equals(request.getVerificationCode())) {
+
+            throw new InvalidVerificationCodeException(
+                    "Invalid verification code.");
+        }
+
+        if (verification.getExpiryTime().isBefore(LocalDateTime.now())) {
+            sendValidationEmail(user);
+            throw new VerificationCodeExpiredException(
+                    "Verification code has expired, we have send a new verification code to your email.");
+
+        }
+
+        user.setActive(true);
+        verification.setUsed(true);
+
+        userRepository.save(user);
+        verificationRepository.save(verification);
 
     }
 

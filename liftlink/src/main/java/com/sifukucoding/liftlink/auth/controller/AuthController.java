@@ -1,10 +1,7 @@
 package com.sifukucoding.liftlink.auth.controller;
 
 
-import com.sifukucoding.liftlink.auth.tdo.AuthenticationResponse;
-import com.sifukucoding.liftlink.auth.tdo.LoginRequest;
-import com.sifukucoding.liftlink.auth.tdo.UserRequest;
-import com.sifukucoding.liftlink.auth.tdo.UserResponse;
+import com.sifukucoding.liftlink.auth.tdo.*;
 import com.sifukucoding.liftlink.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +33,18 @@ public class AuthController {
                     authService.login(request)
             );
 
-        }
+    }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(
+            @Valid @RequestBody EmailVerificationRequest request) {
+
+        authService.verifyEmail(request);
+
+        return ResponseEntity.ok("Email verified successfully.");
+    }
+
+
 
     }
 

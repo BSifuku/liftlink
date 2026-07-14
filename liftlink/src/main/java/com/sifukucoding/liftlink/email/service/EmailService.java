@@ -56,7 +56,7 @@ public class EmailService implements IEmailService {
             Map<String, Object> properties = new HashMap<>();
             properties.put("fullName", fullName);
             properties.put("confirmationUrl", confirmationUrl);
-            properties.put("activationCode", verificationCode);
+            properties.put("verificationCode", verificationCode);
 
             Context context = new Context();
 
