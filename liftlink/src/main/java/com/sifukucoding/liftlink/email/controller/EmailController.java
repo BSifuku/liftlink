@@ -1,19 +1,17 @@
 package com.sifukucoding.liftlink.email.controller;
 
 import com.sifukucoding.liftlink.auth.service.AuthService;
-import com.sifukucoding.liftlink.dto.EmailRequest;
-import com.sifukucoding.liftlink.dto.VerificationResponse;
+import com.sifukucoding.liftlink.email.dto.EmailRequest;
+import com.sifukucoding.liftlink.email.dto.VerificationResponse;
 import com.sifukucoding.liftlink.email.model.EmailTemplateName;
 import com.sifukucoding.liftlink.email.model.EmailVerification;
 import com.sifukucoding.liftlink.email.repository.EmailVerificationRepository;
 import com.sifukucoding.liftlink.email.service.IEmailService;
-import com.sifukucoding.liftlink.model.User;
-import com.sifukucoding.liftlink.repository.UserRepository;
+import com.sifukucoding.liftlink.user.model.User;
+import com.sifukucoding.liftlink.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

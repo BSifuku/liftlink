@@ -31,12 +31,13 @@ public class EmailService implements IEmailService {
 
     @Async
     @Override
-    public void sendVerificationEmail(String to,
-                                      String fullName,
-                                      String subject,
-                                      EmailTemplateName emailTemplateName,
-                                      String confirmationUrl,
-                                      String verificationCode
+    public void sendVerificationEmail(
+            String to,
+            String fullName,
+            String subject,
+            EmailTemplateName emailTemplateName,
+            String confirmationUrl,
+            String verificationCode
     ) {
         String templateName;
         if(emailTemplateName == null){

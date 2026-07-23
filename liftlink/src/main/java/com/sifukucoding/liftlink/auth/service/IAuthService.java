@@ -8,5 +8,7 @@ public interface IAuthService {
     UserResponse register(UserRequest request);
     AuthenticationResponse login(LoginRequest request);
     void verifyEmail(EmailVerificationRequest request);
+    void forgotPassword(ForgotPasswordRequest request);
+    void resetPassword(ResetPasswordRequest request);
 
 }

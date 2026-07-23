@@ -1,6 +1,6 @@
 package com.sifukucoding.liftlink.email.model;
 
-import com.sifukucoding.liftlink.model.User;
+import com.sifukucoding.liftlink.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +27,9 @@ public class EmailVerification {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    private VerificationType type;
 
     @Column(nullable = false)
     private boolean used;

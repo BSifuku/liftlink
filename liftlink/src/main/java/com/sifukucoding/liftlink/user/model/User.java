@@ -1,5 +1,6 @@
-package com.sifukucoding.liftlink.model;
+package com.sifukucoding.liftlink.user.model;
 
+import com.sifukucoding.liftlink.car.model.CarInformation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

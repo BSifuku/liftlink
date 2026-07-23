@@ -1,5 +1,6 @@
-package com.sifukucoding.liftlink.model;
+package com.sifukucoding.liftlink.car.model;
 
+import com.sifukucoding.liftlink.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,7 +36,16 @@ public class CarInformation {
     private Integer seats;
 
     @Column(nullable = false)
-    private String licenseDiskExpiry;
+    private boolean airConditioning;
+
+    @Column(nullable = false)
+    private boolean luggageSpace;
+
+    @Column(nullable = false)
+    private String licenceDiskExpiry;
+
+    @Column(nullable = false)
+    private boolean active;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")

@@ -1,8 +1,7 @@
-package com.sifukucoding.liftlink.repository;
+package com.sifukucoding.liftlink.user.repository;
 
-import com.sifukucoding.liftlink.model.User;
+import com.sifukucoding.liftlink.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

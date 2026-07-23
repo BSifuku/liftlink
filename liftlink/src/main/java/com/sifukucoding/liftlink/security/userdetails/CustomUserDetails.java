@@ -1,7 +1,6 @@
 package com.sifukucoding.liftlink.security.userdetails;
 
-import com.sifukucoding.liftlink.model.Role;
-import com.sifukucoding.liftlink.model.User;
+import com.sifukucoding.liftlink.user.model.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;

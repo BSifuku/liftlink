@@ -1,7 +1,7 @@
 package com.sifukucoding.liftlink.security.service;
 
-import com.sifukucoding.liftlink.model.User;
-import com.sifukucoding.liftlink.repository.UserRepository;
+import com.sifukucoding.liftlink.user.model.User;
+import com.sifukucoding.liftlink.user.repository.UserRepository;
 import com.sifukucoding.liftlink.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

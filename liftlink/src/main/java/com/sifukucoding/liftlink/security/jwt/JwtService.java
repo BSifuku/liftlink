@@ -2,8 +2,7 @@ package com.sifukucoding.liftlink.security.jwt;
 
 
 
-import com.sifukucoding.liftlink.model.User;
-import com.sifukucoding.liftlink.security.userdetails.CustomUserDetails;
+import com.sifukucoding.liftlink.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +19,6 @@ import java.util.function.Function;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
-
-import static javax.xml.crypto.dsig.Transform.BASE64;
 
 @Service
 public class JwtService {

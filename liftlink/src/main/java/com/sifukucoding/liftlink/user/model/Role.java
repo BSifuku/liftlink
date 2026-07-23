@@ -1,4 +1,4 @@
-package com.sifukucoding.liftlink.model;
+package com.sifukucoding.liftlink.user.model;
 
 public enum Role {
     PASSENGER,

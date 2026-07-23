@@ -1,9 +1,5 @@
-package com.sifukucoding.liftlink.dto;
+package com.sifukucoding.liftlink.car.dto;
 
-import com.sifukucoding.liftlink.model.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,9 +23,19 @@ public class CarInformationResponse {
 
     private Integer seats;
 
-    private String licenseDiskExpiry;
+    private boolean luggageSpace;
+
+    private boolean airConditioning;
+
+    private boolean active;
+
+    private String licenceDiskExpiry;
 
     private Long driverId;
+
+    private String driverFullNames;
+
+    private String driverEmail;
 
 
 }

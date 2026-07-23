@@ -1,12 +1,12 @@
 package com.sifukucoding.liftlink.email.repository;
 
 import com.sifukucoding.liftlink.email.model.EmailVerification;
-import com.sifukucoding.liftlink.model.User;
+import com.sifukucoding.liftlink.email.model.VerificationType;
+import com.sifukucoding.liftlink.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.lang.ScopedValue;
 import java.util.Optional;
 
 @Repository
@@ -16,6 +16,7 @@ public interface EmailVerificationRepository
     Optional<EmailVerification> findByUser(User user);
 
     Optional<EmailVerification> findByVerificationCode(String verificationCode);
+    Optional<EmailVerification> findByUserAndType(User user, VerificationType verificationType);
 
 
     //List<EmailVerification> findByExpiredCodesAtBefore(LocalDateTime time);

@@ -1,6 +1,6 @@
 package com.sifukucoding.liftlink.auth.tdo;
 
-import com.sifukucoding.liftlink.model.Role;
+import com.sifukucoding.liftlink.user.model.Role;
 import lombok.Builder;
 import lombok.Data;
 
